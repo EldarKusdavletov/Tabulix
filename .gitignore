@@ -31,7 +31,57 @@
 *.la
 *.a
 *.lib
+# Build directories
+/build/
+/cmake-build-*/
 
+# IDE files
+/.idea/
+/.vscode/
+*.swp
+*.swo
+
+# Compiled object files
+*.o
+*.obj
+*.lo
+*.slo
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled static libraries
+*.a
+*.la
+*.lai
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CPackConfig.cmake
+CPackSourceConfig.cmake
+_deps/
+
+# OS specific files
+.DS_Store
+Thumbs.db
 # Executables
 *.exe
 *.out
