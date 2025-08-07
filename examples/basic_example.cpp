@@ -25,8 +25,12 @@ int main() {
     table.setColumnAlignment(2, tabulix::Alignment::CENTER);
 
     // Try different themes
-    std::cout << "Simple theme:\n";
-    table.setTheme(tabulix::Theme::SIMPLE);
+    std::cout << "None theme:\n";
+    table.setTheme(tabulix::Theme::NONE);
+    std::cout << table << "\n";
+
+    std::cout << "Grid theme:\n";
+    table.setTheme(tabulix::Theme::GRID);
     std::cout << table << "\n";
 
     std::cout << "Unicode single-line theme:\n";
@@ -39,6 +43,18 @@ int main() {
 
     std::cout << "Markdown theme:\n";
     table.setTheme(tabulix::Theme::MARKDOWN);
+    std::cout << table << "\n";
+
+    std::cout << "Minimal theme:\n";
+    table.setTheme(tabulix::Theme::MINIMAL);
+    std::cout << table << "\n";
+
+    std::cout << "Dotted theme:\n";
+    table.setTheme(tabulix::Theme::DOTTED);
+    std::cout << table << "\n";
+
+    std::cout << "Fancy theme:\n";
+    table.setTheme(tabulix::Theme::FANCY);
     std::cout << table << "\n";
 
     return 0;

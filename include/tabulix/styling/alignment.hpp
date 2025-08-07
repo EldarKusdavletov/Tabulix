@@ -15,7 +15,7 @@ namespace tabulix {
 enum class Alignment {
     LEFT,   ///< Left alignment
     CENTER, ///< Center alignment
-    RIGHT   ///< Right alignment
+    RIGHT,   ///< Right alignment
 };
 
 } // namespace tabulix

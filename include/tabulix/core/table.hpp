@@ -154,8 +154,8 @@ public:
 private:
     std::optional<Row> m_header;
     std::vector<Row> m_rows;
-    Theme m_theme = Theme::SIMPLE;
-    Border m_border;
+    Theme m_theme = Theme::GRID;
+    Border m_border = getBorderForTheme(m_theme);
     std::vector<Alignment> m_columnAlignments;
     std::vector<std::optional<size_t>> m_columnWidths;
 

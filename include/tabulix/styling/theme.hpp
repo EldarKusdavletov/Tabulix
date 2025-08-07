@@ -16,16 +16,13 @@ namespace tabulix {
  */
 enum class Theme {
     NONE,           ///< No borders or separators
-    SIMPLE,         ///< Simple ASCII borders (default)
     GRID,           ///< Full ASCII grid
     UNICODE_SINGLE, ///< Unicode single-line borders
     UNICODE_DOUBLE, ///< Unicode double-line borders
     MARKDOWN,       ///< Markdown-style table
     MINIMAL,        ///< Minimal borders
-    COMPACT,        ///< Compact style with minimal spacing
     DOTTED,         ///< Dotted borders
-    DASHED,         ///< Dashed borders
-    FANCY           ///< Fancy decorative borders
+    FANCY,           ///< Fancy decorative borders
 };
 
 /**

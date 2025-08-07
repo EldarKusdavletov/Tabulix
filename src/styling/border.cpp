@@ -96,28 +96,20 @@ bool Border::enabled() const noexcept {
     return !m_horizontal.empty() || !m_vertical.empty();
 }
 
-Border Border::unicodeSingle() {
-    return Border(
-        "─", "│", "┌", "┐", "└", "┘", "┬", "┴", "├", "┤", "┼"
-    );
-}
-
-Border Border::unicodeDouble() {
-    return Border(
-        "═", "║", "╔", "╗", "╚", "╝", "╦", "╩", "╠", "╣", "╬"
-    );
+Border Border::none() {
+    return {"", "", "", "", "", "", "", "", "", "", ""};
 }
 
 Border Border::ascii() {
-    return Border(
-        "-", "|", "+", "+", "+", "+", "+", "+", "+", "+", "+"
-    );
+    return {"-", "|", "+", "+", "+", "+", "+", "+", "+", "+", "+"};
 }
 
-Border Border::none() {
-    return Border(
-        "", "", "", "", "", "", "", "", "", "", ""
-    );
+Border Border::unicodeSingle() {
+    return {"–", "│", "┌", "┐", "└", "┘", "┬", "┴", "├", "┤", "┼"};
+}
+
+Border Border::unicodeDouble() {
+    return {"═", "║", "╔", "╗", "╚", "╝", "╦", "╩", "╠", "╣", "╬"};
 }
 
 } // namespace tabulix

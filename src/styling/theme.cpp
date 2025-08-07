@@ -13,13 +13,8 @@ Border getBorderForTheme(Theme theme) {
         case Theme::NONE:
             return Border::none();
 
-        case Theme::SIMPLE:
-            return Border::ascii();
-
         case Theme::GRID:
-            return Border(
-                "-", "|", "+", "+", "+", "+", "+", "+", "+", "+", "+"
-            );
+            return Border::ascii();
 
         case Theme::UNICODE_SINGLE:
             return Border::unicodeSingle();
@@ -28,34 +23,16 @@ Border getBorderForTheme(Theme theme) {
             return Border::unicodeDouble();
 
         case Theme::MARKDOWN:
-            return Border(
-                "-", "|", "|", "|", "|", "|", "|", "|", "|", "|", "|"
-            );
+            return {"-", "|", "|", "|", "|", "|", "|", "|", "|", "|", "|"};
 
         case Theme::MINIMAL:
-            return Border(
-                "─", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "
-            );
-
-        case Theme::COMPACT:
-            return Border(
-                "-", "|", "+", "+", "+", "+", "+", "+", "+", "+", "+"
-            );
+            return {"-", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "};
 
         case Theme::DOTTED:
-            return Border(
-                "···", "·", "·", "·", "·", "·", "·", "·", "·", "·", "·"
-            );
-
-        case Theme::DASHED:
-            return Border(
-                "---", "|", "+", "+", "+", "+", "+", "+", "+", "+", "+"
-            );
+            return {"·", "·", "·", "·", "·", "·", "·", "·", "·", "·", "·"};
 
         case Theme::FANCY:
-            return Border(
-                "═", "║", "╔", "╗", "╚", "╝", "╦", "╩", "╠", "╣", "╬"
-            );
+            return {"═", "║", "╔", "╗", "╚", "╝", "╦", "╩", "╠", "╣", "╬"};
 
         default:
             return Border::ascii();
