@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <numeric>
 #include <stdexcept>
+#include <sstream>
 
 namespace tabulix {
 
@@ -114,23 +115,53 @@ std::ostream& operator<<(std::ostream& os, const Table& table) {
     return os << table.str();
 }
 
+// Helper function to split text by newlines
+std::vector<std::string> Table::splitLines(const std::string& text) const {
+    std::vector<std::string> lines;
+    std::stringstream ss(text);
+    std::string line;
+
+    while (std::getline(ss, line)) {
+        lines.push_back(line);
+    }
+
+    // Handle case where text doesn't end with newline or is empty
+    if (lines.empty()) {
+        lines.push_back(text);
+    }
+
+    return lines;
+}
+
+// Helper function to get maximum line width in a multiline text
+size_t Table::getMaxLineWidth(const std::string& text) const {
+    const auto lines = splitLines(text);
+    size_t maxWidth = 0;
+    for (const auto& line : lines) {
+        maxWidth = std::max(maxWidth, line.size());
+    }
+    return maxWidth;
+}
+
 std::vector<size_t> Table::calculateColumnWidths() const {
     const size_t columns = columnCount();
     if (columns == 0) return {};
 
     std::vector<size_t> widths(columns, 0);
 
-    // Check header widths
+    // Check header widths (considering multiline content)
     if (m_header.has_value()) {
         for (size_t i = 0; i < m_header->size() && i < columns; ++i) {
-            widths[i] = std::max(widths[i], m_header->at(i).width());
+            const std::string cellValue = m_header->at(i).value();
+            widths[i] = std::max(widths[i], getMaxLineWidth(cellValue));
         }
     }
 
-    // Check data row widths
+    // Check data row widths (considering multiline content)
     for (const auto& row : m_rows) {
         for (size_t i = 0; i < row.size() && i < columns; ++i) {
-            widths[i] = std::max(widths[i], row.at(i).width());
+            const std::string cellValue = row.at(i).value();
+            widths[i] = std::max(widths[i], getMaxLineWidth(cellValue));
         }
     }
 
@@ -158,7 +189,7 @@ std::string Table::render() const {
     // Helper for padding cells according to alignment
     auto padCell = [&](const std::string& text, size_t width, Alignment align) -> std::string {
         if (text.size() >= width) {
-            return text;
+            return text.substr(0, width); // Truncate if too long
         }
 
         switch (align) {
@@ -177,6 +208,56 @@ std::string Table::render() const {
         }
     };
 
+    // Helper to render a multi-line row
+    auto renderMultilineRow = [&](const Row& row) -> std::string {
+        std::string rowResult;
+
+        // Split all cells in the row into lines
+        std::vector<std::vector<std::string>> cellLines(columns);
+        size_t maxLines = 0;
+
+        for (size_t i = 0; i < columns; ++i) {
+            const auto& cell = i < row.size() ? row.at(i) : Cell("");
+            cellLines[i] = splitLines(cell.value());
+            maxLines = std::max(maxLines, cellLines[i].size());
+        }
+
+        // Ensure all cells have the same number of lines (pad with empty strings)
+        for (auto& lines : cellLines) {
+            while (lines.size() < maxLines) {
+                lines.emplace_back("");
+            }
+        }
+
+        // Render each line of the row
+        for (size_t lineIdx = 0; lineIdx < maxLines; ++lineIdx) {
+            if (hasBorder) {
+                rowResult += m_border.vertical();
+            }
+
+            for (size_t i = 0; i < columns; ++i) {
+                const auto& cell = i < row.size() ? row.at(i) : Cell("");
+                Alignment align = cell.alignment().value_or(
+                    i < m_columnAlignments.size() ? m_columnAlignments[i] : Alignment::LEFT
+                                                           );
+
+                const std::string& lineText = cellLines[i][lineIdx];
+                rowResult += " " + padCell(lineText, columnWidths[i], align) + " ";
+
+                if (hasBorder && i < columns - 1) {
+                    rowResult += m_border.vertical();
+                }
+            }
+
+            if (hasBorder) {
+                rowResult += m_border.vertical();
+            }
+            rowResult += "\n";
+        }
+
+        return rowResult;
+    };
+
     // Render top border
     if (hasBorder) {
         result += m_border.topLeft();
@@ -191,27 +272,7 @@ std::string Table::render() const {
 
     // Render header
     if (m_header.has_value()) {
-        if (hasBorder) {
-            result += m_border.vertical();
-        }
-
-        for (size_t i = 0; i < columns; ++i) {
-            const auto& cell = i < m_header->size() ? m_header->at(i) : Cell("");
-            Alignment align = cell.alignment().value_or(
-                i < m_columnAlignments.size() ? m_columnAlignments[i] : Alignment::LEFT
-            );
-
-            result += " " + padCell(cell.value(), columnWidths[i], align) + " ";
-
-            if (hasBorder && i < columns - 1) {
-                result += m_border.vertical();
-            }
-        }
-
-        if (hasBorder) {
-            result += m_border.vertical();
-        }
-        result += "\n";
+        result += renderMultilineRow(*m_header);
 
         // Render header separator
         if (hasBorder) {
@@ -229,28 +290,7 @@ std::string Table::render() const {
     // Render data rows
     for (size_t rowIdx = 0; rowIdx < m_rows.size(); ++rowIdx) {
         const auto& row = m_rows[rowIdx];
-
-        if (hasBorder) {
-            result += m_border.vertical();
-        }
-
-        for (size_t i = 0; i < columns; ++i) {
-            const auto& cell = i < row.size() ? row.at(i) : Cell("");
-            Alignment align = cell.alignment().value_or(
-                i < m_columnAlignments.size() ? m_columnAlignments[i] : Alignment::LEFT
-            );
-
-            result += " " + padCell(cell.value(), columnWidths[i], align) + " ";
-
-            if (hasBorder && i < columns - 1) {
-                result += m_border.vertical();
-            }
-        }
-
-        if (hasBorder) {
-            result += m_border.vertical();
-        }
-        result += "\n";
+        result += renderMultilineRow(row);
 
         // Add row separator if not the last row
         if (hasBorder && rowIdx < m_rows.size() - 1) {

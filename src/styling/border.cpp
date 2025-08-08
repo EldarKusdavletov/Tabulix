@@ -105,7 +105,7 @@ Border Border::ascii() {
 }
 
 Border Border::unicodeSingle() {
-    return {"–", "│", "┌", "┐", "└", "┘", "┬", "┴", "├", "┤", "┼"};
+    return {"─", "│", "┌", "┐", "└", "┘", "┬", "┴", "├", "┤", "┼"};
 }
 
 Border Border::unicodeDouble() {

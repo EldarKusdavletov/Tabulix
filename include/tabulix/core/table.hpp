@@ -170,6 +170,20 @@ private:
      * @return Formatted table string
      */
     [[nodiscard]] std::string render() const;
+
+    /**
+     * @brief Split text by newline characters for multiline support
+     * @param text Text to split
+     * @return Vector of lines
+     */
+    [[nodiscard]] std::vector<std::string> splitLines(const std::string& text) const;
+
+    /**
+     * @brief Get the maximum line width in a multiline text
+     * @param text Text to analyze
+     * @return Maximum width among all lines
+     */
+    [[nodiscard]] size_t getMaxLineWidth(const std::string& text) const;
 };
 
 // Template implementation

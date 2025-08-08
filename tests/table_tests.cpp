@@ -51,7 +51,7 @@ TEST(TableTest, SetTheme) {
     table.addRow({"Test", "123"});
 
     // Test that different themes produce different output
-    table.setTheme(tabulix::Theme::SIMPLE);
+    table.setTheme(tabulix::Theme::GRID);
     std::string simpleOutput = table.str();
 
     table.setTheme(tabulix::Theme::UNICODE_SINGLE);
